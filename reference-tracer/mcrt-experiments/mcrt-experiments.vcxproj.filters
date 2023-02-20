@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{991f718f-3318-4e24-85fa-5bcf35dce399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GPU">
+      <UniqueIdentifier>{d6088ee6-5fbf-495f-bed2-612a193e2058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GPU">
+      <UniqueIdentifier>{d2d7743e-5a87-4e48-b642-de6bf21d71a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pipelines">
+      <UniqueIdentifier>{7a601268-1747-41c6-9bd1-a0668dffd405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pipelines">
+      <UniqueIdentifier>{a53b12f3-a554-491e-b3ff-d15ae1fdef24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Acceleration Structures">
+      <UniqueIdentifier>{65091781-cabb-407f-acae-a9988c659e48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Acceleration Structures">
+      <UniqueIdentifier>{a5db96c5-eef1-4ba2-b449-1a359900cce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{afcc83f1-30eb-4b56-a68b-13b21ae18c12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="devicePrograms_embedded.c">
+      <Filter>Source Files\GPU</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcrt_pipeline.cpp">
+      <Filter>Source Files\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="default_pipeline.cpp">
+      <Filter>Source Files\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="area_light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gas.cpp">
+      <Filter>Source Files\Acceleration Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="ias.cpp">
+      <Filter>Source Files\Acceleration Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="image.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CUDABuffer.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="optix7.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFWindow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LaunchParams.hpp">
+      <Filter>Header Files\GPU</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="mcrt_pipeline.hpp">
+      <Filter>Header Files\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="default_pipeline.hpp">
+      <Filter>Header Files\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="area_light.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gas.hpp">
+      <Filter>Header Files\Acceleration Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="ias.hpp">
+      <Filter>Header Files\Acceleration Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="image.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\nvidia\vec_math.hpp">
+      <Filter>Header Files\GPU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\nvidia\random.hpp">
+      <Filter>Header Files\GPU</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="devicePrograms.cu">
+      <Filter>Source Files\GPU</Filter>
+    </None>
+    <None Include="utils.cuh">
+      <Filter>Source Files\GPU</Filter>
+    </None>
+  </ItemGroup>
+</Project>
