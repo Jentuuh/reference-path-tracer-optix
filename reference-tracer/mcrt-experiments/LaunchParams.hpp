@@ -47,7 +47,15 @@ namespace mcrt {
 	};
 
 	struct referenceTracerPRD {
-		glm::vec3 resultColor;
+		glm::vec3    emitted;
+		glm::vec3    radiance;
+		glm::vec3    attenuation;
+		glm::vec3    origin;
+		glm::vec3    direction;
+		unsigned int seed;
+		int          countEmitted;
+		int          done;
+		int          pad;
 	};
 
 	struct LaunchParamsTutorial
