@@ -47,7 +47,7 @@ namespace mcrt {
 	{
         moduleCompileOptions.maxRegisterCount = 50;
         moduleCompileOptions.optLevel = OPTIX_COMPILE_OPTIMIZATION_DEFAULT;
-        moduleCompileOptions.debugLevel = OPTIX_COMPILE_DEBUG_LEVEL_NONE;
+        moduleCompileOptions.debugLevel = OPTIX_COMPILE_DEBUG_LEVEL_MODERATE;
 
         pipelineCompileOptions = {};
         pipelineCompileOptions.traversableGraphFlags = OPTIX_TRAVERSABLE_GRAPH_FLAG_ALLOW_SINGLE_GAS;
@@ -59,7 +59,7 @@ namespace mcrt {
 
         // Max # of ray bounces
         pipelineLinkOptions.maxTraceDepth = 2;
-
+        pipelineLinkOptions.debugLevel = OPTIX_COMPILE_DEBUG_LEVEL_MODERATE;
         const std::string ptxCode = embedded_ptx_code;
 
         char log[2048];
@@ -356,6 +356,8 @@ namespace mcrt {
             std::shared_ptr<Model> model = scene.getGameObjects()[meshID]->model;
             std::shared_ptr<TriangleMesh> mesh = model->mesh;
 
+            unsigned flags = OPTIX_GEOMETRY_FLAG_DISABLE_ANYHIT;
+
             triangleInput[meshID] = {};
             triangleInput[meshID].type
                 = OPTIX_BUILD_INPUT_TYPE_TRIANGLES;
@@ -375,7 +377,7 @@ namespace mcrt {
             triangleInput[meshID].triangleArray.numIndexTriplets = (int)model->mesh->indices.size();
             triangleInput[meshID].triangleArray.indexBuffer = d_indices[meshID];
 
-            triangleInputFlags[meshID] = 0;
+            triangleInputFlags[meshID] = flags;
 
             // in this example we have one SBT entry, and no per-primitive
             // materials:
