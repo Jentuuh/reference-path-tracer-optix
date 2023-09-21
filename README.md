@@ -1,5 +1,5 @@
 # reference-ray-tracer-optix
-Reference ray tracing implementation in OptiX to compare with the memory coherent approach developed during my Master's thesis.
+Real-time diffuse path tracing implementation in OptiX to compare with the [algorithm developed for my Master's thesis](https://github.com/Jentuuh/scalable-coherent-path-tracing).
 
 # Demo
 ![Real-time path tracer demo](./ref_path_tracer.gif?raw=true "Real-time path tracer demo")
