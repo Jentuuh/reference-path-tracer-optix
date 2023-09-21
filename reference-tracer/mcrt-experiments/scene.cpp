@@ -80,6 +80,26 @@ namespace mcrt {
 		}
 	}
 
+    void Scene::updateMinMax()
+    {
+        sceneMin = glm::vec3{ std::numeric_limits<float>::infinity() };
+        sceneMax = glm::vec3{ -std::numeric_limits<float>::infinity() };
+
+        for (auto& g : gameObjects)
+        {
+            for (auto& v : g->getWorldVertices())
+            {
+                if (v.x > sceneMax.x) sceneMax.x = v.x;
+                if (v.y > sceneMax.y) sceneMax.y = v.y;
+                if (v.z > sceneMax.z) sceneMax.z = v.z;
+
+                if (v.x < sceneMin.x) sceneMin.x = v.x;
+                if (v.y < sceneMin.y) sceneMin.y = v.y;
+                if (v.z < sceneMin.z) sceneMin.z = v.z;
+            }
+        }
+
+    }
 
 	// Make sure this method is called AFTER all objects are added to the scene
 	void Scene::normalize()
@@ -111,14 +131,17 @@ namespace mcrt {
 			g->translate(translation);
 			g->worldTransform.applySceneRescale(glm::vec3{ minScale, minScale, minScale });
 		}
-
+        updateMinMax();
 	}
 
     void Scene::loadLights()
     {
         // LightData{origin, du, dv, normal, power, width, height}
         //lights.push_back(AreaLight{ false, LightData{{0.4f, 0.4f, 0.88f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.8f, 0.8f, 0.8f}, 0.2f, 0.2f} });
+        //lights.push_back(AreaLight{ false, LightData{{0.45f, 0.965f, 0.45f }, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {100.0f, 100.0f, 100.0f}, 0.1f, 0.1f} });
         lights.push_back(AreaLight{ false, LightData{{0.45f, 0.965f, 0.45f }, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {100.0f, 100.0f, 100.0f}, 0.1f, 0.1f} });
+
+        //lights.push_back(AreaLight{ false, LightData{{0.45f, 0.465f, 0.45f }, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {100.0f, 100.0f, 100.0f}, 0.1f, 0.1f} });
     }
 
 

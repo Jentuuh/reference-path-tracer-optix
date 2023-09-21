@@ -20,10 +20,11 @@
 
 namespace mcrt {
 
-    Renderer::Renderer(Scene& scene, const Camera& camera): renderCamera{camera}, scene{scene}
+    Renderer::Renderer(Scene& scene, const Camera& camera, CAMERA_MODE camMode): renderCamera{camera}, scene{scene}, camMode{camMode}
     {
         initOptix();
-        updateCamera(camera);
+
+        //viewTargets.push_back(glm::vec3{0.0f, 0.0f, 0.0f});
 
         std::cout << "Creating OptiX context..." << std::endl;
         createContext();
@@ -208,7 +209,6 @@ namespace mcrt {
             1
         ));
 
-
         // TODO: implement double buffering!!!
         // sync - make sure the frame is rendered before we download and
         // display (obviously, for a high-performance application you
@@ -217,23 +217,60 @@ namespace mcrt {
         CUDA_SYNC_CHECK();
     }
 
-    void Renderer::updateCamera(const Camera& camera)
-    {
+    void Renderer::updateCamera(GameObject* viewerObject)
+    {   
         if (tutorialPipeline != nullptr)
         {
-            renderCamera = camera;
-            tutorialPipeline->launchParams.camera.position = camera.position;
-            tutorialPipeline->launchParams.camera.direction = normalize(camera.target - camera.position);
-            const float cosFovy = 0.66f;
-            const float aspect = float(tutorialPipeline->launchParams.frame.size.x) / float(tutorialPipeline->launchParams.frame.size.y);
-            tutorialPipeline->launchParams.camera.horizontal
-                = cosFovy * aspect * normalize(cross(tutorialPipeline->launchParams.camera.direction,
-                    camera.up));
-            tutorialPipeline->launchParams.camera.vertical
-                = cosFovy * normalize(cross(tutorialPipeline->launchParams.camera.horizontal,
-                    tutorialPipeline->launchParams.camera.direction));
+            if (camMode == FREE_ROAM)
+            {
+                tutorialPipeline->launchParams.camera.position = viewerObject->worldTransform.translation;
+                tutorialPipeline->launchParams.camera.direction = normalize(renderCamera.getViewDirection(viewerObject->worldTransform.translation, viewerObject->worldTransform.rotation));
+                const float cosFovy = 0.66f;
+                const float aspect = float(tutorialPipeline->launchParams.frame.size.x) / float(tutorialPipeline->launchParams.frame.size.y);
+                tutorialPipeline->launchParams.camera.horizontal
+                    = cosFovy * aspect * normalize(renderCamera.getViewRight(viewerObject->worldTransform.translation, viewerObject->worldTransform.rotation));
+                tutorialPipeline->launchParams.camera.vertical
+                    = cosFovy * normalize(renderCamera.getViewUp(viewerObject->worldTransform.translation, viewerObject->worldTransform.rotation));
+            }
+            else if (camMode == TARGET)
+            {
+                // BasisAxis lookAtBasis = renderCamera.getTargetBasisAxis(viewerObject->worldTransform.translation, glm::vec3{ 0.495000f, 0.206984f, 0.304413f }, glm::vec3{0.0f, -1.0f, 0.0f}); // Sponza
+                BasisAxis lookAtBasis = renderCamera.getTargetBasisAxis(viewerObject->worldTransform.translation, glm::vec3{ 0.5000f, 0.0106984f, 0.50f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+                tutorialPipeline->launchParams.camera.position = viewerObject->worldTransform.translation;
+                tutorialPipeline->launchParams.camera.direction = lookAtBasis.w;
+                const float cosFovy = 0.66f;
+                const float aspect = float(tutorialPipeline->launchParams.frame.size.x) / float(tutorialPipeline->launchParams.frame.size.y);
+                tutorialPipeline->launchParams.camera.horizontal
+                    = cosFovy * aspect * lookAtBasis.u;
+                tutorialPipeline->launchParams.camera.vertical
+                    = cosFovy * lookAtBasis.v;
+            }
+  
         }
     }
+
+    void Renderer::updateCameraInCircle(GameObject* viewerObject, float dt)
+    {
+        CURRENT_TIME = fmod(CURRENT_TIME + dt, ROTATE_TOTAL_TIME);
+        float fraction = CURRENT_TIME / ROTATE_TOTAL_TIME;
+        float angle = fraction * 2.0f * glm::pi<float>();
+
+        float z = glm::sin(angle);
+        float x = glm::cos(angle);
+        //viewerObject->worldTransform.translation = (glm::vec3{ x, 0.3f, z } + glm::vec3{ 1.0f, 0.0f, 1.0f }) * 0.5f;
+        viewerObject->worldTransform.translation = (glm::vec3 {x, 0.3f, z} + glm::vec3{5.0f, 2.0f, 5.0f}) * 0.05f;
+        BasisAxis lookAtBasis = renderCamera.getTargetBasisAxis(viewerObject->worldTransform.translation, glm::vec3{ 0.495000f, 0.106984f, 0.304413f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+        //BasisAxis lookAtBasis = renderCamera.getTargetBasisAxis(viewerObject->worldTransform.translation, glm::vec3{ 0.5000f, 0.0106984f, 0.50f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+        tutorialPipeline->launchParams.camera.position = viewerObject->worldTransform.translation;
+        tutorialPipeline->launchParams.camera.direction = lookAtBasis.w;
+        const float cosFovy = 0.66f;
+        const float aspect = float(tutorialPipeline->launchParams.frame.size.x) / float(tutorialPipeline->launchParams.frame.size.y);
+        tutorialPipeline->launchParams.camera.horizontal
+            = cosFovy * aspect * lookAtBasis.u;
+        tutorialPipeline->launchParams.camera.vertical
+            = cosFovy * lookAtBasis.v;
+    }
+
 
     void Renderer::writeToImage(std::string fileName, int resX, int resY, void* data)
     {
@@ -253,7 +290,7 @@ namespace mcrt {
 
     }
 
-    void Renderer::resize(const glm::ivec2& newSize)
+    void Renderer::resize(const glm::ivec2& newSize, GameObject* viewerObject)
     {
         // If window minimized
         if (newSize.x == 0 | newSize.y == 0) return;
@@ -266,7 +303,7 @@ namespace mcrt {
         tutorialPipeline->launchParams.frame.colorBuffer = (uint32_t*)colorBuffer.d_pointer();
 
         // Reset camera, aspect may have changed
-        updateCamera(renderCamera);
+        updateCamera(viewerObject);
     }
 
     // Copy rendered color buffer from device to host memory for display

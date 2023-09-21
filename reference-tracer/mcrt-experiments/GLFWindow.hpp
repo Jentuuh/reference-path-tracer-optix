@@ -38,7 +38,7 @@ namespace mcrt {
 			return glm::ivec2((int)x, (int)y);
 		}
 
-		virtual void render() {}
+		virtual void render(float deltaTime) {}
 		void run();
 
 		GLFWwindow* handle = nullptr;

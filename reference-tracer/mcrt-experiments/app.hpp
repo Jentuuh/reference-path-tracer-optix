@@ -2,11 +2,13 @@
 #include "renderer.hpp"
 #include "scene.hpp"
 #include "GLFWindow.hpp"
+#include "keyboard_movement_controller.hpp"
 
 #include <GL/gl.h>
 
 #include <memory>
-
+#include <string>
+#include "timer.hpp"
 
 namespace mcrt {
 
@@ -17,21 +19,42 @@ namespace mcrt {
             const Camera& camera,
             const float worldScale)
             : GLFCameraWindow(title, camera.position, camera.target, camera.up, worldScale),
-            sample(model, camera)
+            sample(model, camera, TARGET)
         {
-            sample.updateCamera(camera);
+            viewerObject = std::make_unique<GameObject>(Transform{ {0.5f, 0.5f, 0.5f}, {0.0f, glm::pi<float>(), 0.0f}, {1.0f, 1.0f, 1.0f} }, nullptr);
+            viewPositions = {};
+            sample.updateCameraInCircle(viewerObject.get(), 0.0f);
+            //sample.updateCamera(viewerObject.get());
         }
 
-        virtual void render() override
+        virtual void render(float deltaTime) override
         {
-            if (cameraFrame.modified) {
+            //cameraController.moveInPlaneXZ(this->handle, deltaTime, viewerObject.get(), &viewIndex, viewPositions.size());
 
-                sample.updateCamera(Camera{ cameraFrame.get_from(),
-                                         cameraFrame.get_at(),
-                                         cameraFrame.get_up() });
-                cameraFrame.modified = false;
-            }
+            //if (cameraController.cameraModified) {
+            //    //viewerObject->setPosition(viewPositions[viewIndex]);
+            //    sample.updateCamera(viewerObject.get());
+            //    cameraController.cameraModified = false;
+            //}
+            sample.updateCameraInCircle(viewerObject.get(), deltaTime);
+
+   /*         if (viewIndex < viewPositions.size())
+            {
+                timer.startTimedEvent(std::to_string(viewIndex));
+            }        */    
             sample.render(fbSize);
+
+            //if (viewIndex < viewPositions.size())
+            //{
+            //    timer.stopTimedEvent(std::to_string(viewIndex));
+            //}
+            //viewIndex++;
+            //cameraController.cameraModified = true;
+            //if (viewIndex == viewPositions.size())
+            //{
+            //    timer.printSummary();
+            //    timer.printSummaryToTXT();
+            //}
         }
 
         virtual void draw() override
@@ -85,15 +108,20 @@ namespace mcrt {
         virtual void resize(const glm::ivec2& newSize)
         {
             fbSize = newSize;
-            sample.resize(newSize);
+            sample.resize(newSize, viewerObject.get());
             pixels.resize(newSize.x * newSize.y);
         }
 
+        std::unique_ptr<GameObject> viewerObject;
+        KeyboardMovementController cameraController;
+        std::vector<glm::vec3> viewPositions;
+        int viewIndex = 0;
 
         glm::ivec2                  fbSize;
         GLuint                      fbTexture{ 0 };
         Renderer                    sample;
         std::vector<uint32_t>       pixels;
+        Timer                       timer;
     };
 
 	class App
@@ -104,6 +132,7 @@ namespace mcrt {
 		void run();
 	private:
         void loadScene();
+        void generateViewPositions();
 
         std::unique_ptr<MCRTWindow> window;
         Scene scene;

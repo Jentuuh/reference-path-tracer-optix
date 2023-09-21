@@ -11,32 +11,27 @@
 
 namespace mcrt {
 	
-	enum BIAS_MODE {
-		UNBIASED,
-		BIASED_PROBES
-	};
-
-	enum PROBE_MODE {
-		CUBE_MAP,
-		SPHERICAL_HARMONICS,
-		NA
+	enum CAMERA_MODE {
+		TARGET,
+		FREE_ROAM
 	};
 
 	class Renderer {
 	public:
 		/*! Constructor : performs setup, including initializing OptiX, creation of module
 		 pipelines, programs, SBT etc. */
-		Renderer(Scene& scene, const Camera& camera);
+		Renderer(Scene& scene, const Camera& camera, CAMERA_MODE camMode);
 
 		void render(glm::ivec2 fbSize);
 
-		void resize(const glm::ivec2& newSize);
+		void resize(const glm::ivec2& newSize, GameObject* viewerObject);
 
 		// Download rendered color buffer from device
 		void downloadPixels(uint32_t h_pixels[]);
 
 		// Update camera to render from
-		void updateCamera(const Camera& camera);
+		void updateCamera(GameObject* viewerObject);
+		void updateCameraInCircle(GameObject* viewerObject, float dt);
 
 	private:
 		void writeToImage(std::string fileName, int resX, int resY, void* data);
@@ -78,6 +73,8 @@ namespace mcrt {
 		CUDABuffer lightDataBuffer;	// In this buffer we'll store our light source data
 
 		Camera renderCamera;
+		CAMERA_MODE camMode;
+		std::vector<glm::vec3> viewTargets;
 
 		// Scene we are tracing rays against
 		Scene& scene;
@@ -92,5 +89,9 @@ namespace mcrt {
 
 		std::vector<cudaArray_t>         textureArrays;
 		std::vector<cudaTextureObject_t> textureObjects;
+
+	private:
+		float CURRENT_TIME = 0.0f;
+		float ROTATE_TOTAL_TIME = 5.0f;
 	};
 }

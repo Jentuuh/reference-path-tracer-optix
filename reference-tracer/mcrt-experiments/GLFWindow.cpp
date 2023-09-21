@@ -1,5 +1,8 @@
 #include "GLFWindow.hpp"
 
+
+#include <chrono>
+
 namespace mcrt {
 
     static void glfw_error_callback(int error, const char* description)
@@ -25,7 +28,7 @@ namespace mcrt {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 
-        handle = glfwCreateWindow(1200, 800, title.c_str(), NULL, NULL);
+        handle = glfwCreateWindow(1920, 1080, title.c_str(), NULL, NULL);
    
         if (!handle) {
             glfwTerminate();
@@ -83,8 +86,16 @@ namespace mcrt {
         glfwSetKeyCallback(handle, glfwindow_key_cb);
         glfwSetCursorPosCallback(handle, glfwindow_mouseMotion_cb);
 
+        auto currentTime = std::chrono::high_resolution_clock::now();
+
+
         while (!glfwWindowShouldClose(handle)) {
-            render();
+            // Time step (delta time)
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            currentTime = newTime;
+
+            render(frameTime);
             draw();
 
             glfwSwapBuffers(handle);

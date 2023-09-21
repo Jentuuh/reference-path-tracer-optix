@@ -31,6 +31,8 @@ namespace mcrt {
 		std::vector<std::shared_ptr<Texture>>& getTextures() { return textures; };
 		std::vector<LightData> getLightsData();
 
+		void updateMinMax();
+
 		void addGameObject(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, std::shared_ptr<Model> model);
 		void loadModelFromOBJ(const std::string& fileName);
 		int loadTexture(std::map<std::string, int>& knownTextures, const std::string& inFileName, const std::string& modelPath);

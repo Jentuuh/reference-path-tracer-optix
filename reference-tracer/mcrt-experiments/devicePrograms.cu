@@ -9,7 +9,7 @@
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#define INDIRECT_BRDF_SAMPLES 2
+#define INDIRECT_BRDF_SAMPLES 5
 #define PI 3.14159265358979323846f
 
 using namespace mcrt;
@@ -284,7 +284,7 @@ namespace mcrt {
         referenceTracerPRD* prd = getPRD();
 
         prd->radiance = glm::vec3{0.0f, 0.0f, 0.0f};
-        prd->emitted = glm::vec3{ 0.0f, 0.0f, 0.0f };
+        prd->emitted = glm::vec3{0.0f, 0.0f, 0.0f };
         prd->done = true;
     }
 
